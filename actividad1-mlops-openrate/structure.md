@@ -120,7 +120,7 @@ uv sync
 
 #### Instalar dependencias específicas
 ```bash
-uv add numpy pandas scikit-learn matplotlib seaborn 
+uv add numpy pandas matplotlib seaborn mlflow dvc scikit-learn joblib 
 ```
 
 ### Dependencias de Desarrollo
