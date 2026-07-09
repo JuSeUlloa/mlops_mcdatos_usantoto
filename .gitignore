@@ -1,1 +1,6 @@
 .env
+actividad1-mlops-openrate/.pytest_cache/
+actividad1-mlops-openrate/.venv/
+actividad1-mlops-openrate/src/__pycache__
+*.pyc
+__init__.py

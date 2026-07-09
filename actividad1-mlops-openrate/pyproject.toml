@@ -8,8 +8,28 @@ dependencies = [
     "dvc>=3.67.1",
     "joblib>=1.5.3",
     "matplotlib>=3.11.0",
-    "mlflow>=1.27.0",
+    "mlflow>=2.20.0",
     "numpy>=2.4.6",
-    "pandas>=3.0.3",
+    "pandas>=2.2.0,<3",
+    "pyyaml>=6.0.3",
     "scikit-learn>=1.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.uv]
+environments = [
+    "sys_platform == 'win32'",
+    "sys_platform == 'darwin'",
+    "sys_platform == 'linux'",
 ]

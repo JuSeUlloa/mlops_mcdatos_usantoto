@@ -1,5 +1,7 @@
+from sesion_duration.train import *
+
 def main():
-    print("Start codification")
+    run()
 
 
 if __name__ == "__main__":
