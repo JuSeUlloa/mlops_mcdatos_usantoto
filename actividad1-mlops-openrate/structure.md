@@ -161,6 +161,47 @@ python src/main.py
 uv run --python 3.14 src/main.py
 ```
 
+### Opción 4: Usando Make (Recomendado)
+```bash
+make run
+```
+
+---
+
+## Comandos Make
+
+El proyecto incluye un `Makefile` para centralizar los comandos más utilizados.
+
+### Comandos Disponibles
+
+| Comando | Descripción |
+|---------|-------------|
+| `make install` | Instalar/sincronizar dependencias |
+| `make test` | Ejecutar todas las pruebas |
+| `make test-unit` | Ejecutar solo pruebas unitarias |
+| `make test-integration` | Ejecutar solo pruebas de integración |
+| `make run` | Ejecutar el script principal |
+| `make clean` | Limpiar archivos de cache |
+
+### Ejemplos de Uso
+
+```bash
+# Instalar dependencias
+make install
+
+# Ejecutar todas las pruebas
+make test
+
+# Ejecutar solo pruebas unitarias
+make test-unit
+
+# Ejecutar el proyecto
+make run
+
+# Limpiar archivos temporales
+make clean
+```
+
 ---
 
 ## Estructura de Directorios
@@ -179,14 +220,22 @@ mlops_mcdatos_usantoto/
     ├── README.md                       # Documentación específica de la actividad
     ├── pyproject.toml                  # Configuración del proyecto (uv)
     ├── uv.lock                         # Archivo lock de dependencias
+    ├── Makefile                        # Comandos centralizados del proyecto
     ├── .python-version                 # Versión de Python fijada
     ├── .venv/                          # Entorno virtual (no versionado)
     │
     ├── data/                           # Directorio de datos
     │   └── training_data.csv           # Dataset generado (1500 registros)
     │
-    └── src/                            # Código fuente
-        └── generate_data.py            # Script de generación de datos
+    ├── src/                            # Código fuente
+    │   └── main.py                     # Script principal
+    │
+    └── tests/                          # Pruebas
+        ├── conftest.py                 # Fixtures compartidos
+        ├── unit/                       # Pruebas unitarias
+        │   └── test_main.py
+        └── integration/                # Pruebas de integración
+            └── test_integration.py
     ├── structure.md                    # Este archivo - Guía de configuración
 ```
 
@@ -196,10 +245,12 @@ mlops_mcdatos_usantoto/
 |---------|-------------|
 | `pyproject.toml` | Configuración del proyecto, dependencias y metadatos |
 | `uv.lock` | Versiones exactas de todas las dependencias instaladas |
+| `Makefile` | Comandos centralizados (install, test, run, clean) |
 | `.python-version` | Versión específica de Python para el proyecto |
 | `.venv/` | Entorno virtual aislado (no debe versionarse) |
 | `training_data.csv` | Dataset sintético generado para entrenamiento |
-| `generate_data.py` | Script que genera datos sintéticos realistas |
+| `main.py` | Script principal del proyecto |
+| `tests/` | Directorio de pruebas unitarias y de integración |
 
 ---
 
