@@ -3,9 +3,10 @@ name: Financial Deploy API
 
 on:
   push:
-    branches: [main, feature/model-training]
+    branches: [main]
     paths:
       - 'actividad2-fastapi-finanzas/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 env:
