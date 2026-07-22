@@ -15,7 +15,7 @@ env:
   SERVICE: fastapi-finanzas
   IMAGE: fastapi-finanzas
   WORKLOAD_IDENTITY_POOL: github-pool
-  SERVICE_ACCOUNT_EMAIL: github-actions-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+  SERVICE_ACCOUNT_EMAIL: fastapi-finanzas@project-b6b68f72-03d0-4f1b-aca.iam.gserviceaccount.com
 
 jobs:
   deploy:
@@ -27,6 +27,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Debug OIDC tokens
+        run: |
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:+set}"
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL: ${ACTIONS_ID_TOKEN_REQUEST_URL:+set}"
+          echo "GITHUB_TOKEN: ${GITHUB_TOKEN:+set}"
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
