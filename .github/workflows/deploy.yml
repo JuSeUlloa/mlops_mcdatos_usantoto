@@ -13,7 +13,7 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   PROJECT_NUMBER: 781291033375
   REGION: us-central1
-  REPOSITORY: mlops_mcdatos_usantoto
+  REPOSITORY: mlops-mcdatos-usantoto
   SERVICE: fastapi-finanzas
   IMAGE: fastapi-finanzas
   WORKLOAD_IDENTITY_POOL: github-pool
