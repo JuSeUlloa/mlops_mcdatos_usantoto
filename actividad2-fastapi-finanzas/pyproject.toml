@@ -1,0 +1,14 @@
+[project]
+name = "actividad02-mlops-api"
+version = "0.1.0"
+description = "Project 02 mlops APIS"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.135.4",
+    "matplotlib>=3.11.0",
+    "pandas>=3.0.3",
+    "requests>=2.34.2",
+    "uvicorn>=0.41.0",
+    "yfinance>=1.5.1",
+]

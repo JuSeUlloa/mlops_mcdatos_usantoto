@@ -5,7 +5,8 @@
 2. [Configuración del Proyecto](#configuración-del-proyecto)
 3. [Instalación de Dependencias](#instalación-de-dependencias)
 4. [Ejecución del Proyecto](#ejecución-del-proyecto)
-5. [Estructura de Directorios](#estructura-de-directorios)
+5. [Actividad 2: FastAPI Finanzas](#actividad-2-fastapi-finanzas)
+6. [Estructura de Directorios](#estructura-de-directorios)
 
 ---
 
@@ -204,6 +205,103 @@ make clean
 
 ---
 
+## Actividad 2: FastAPI Finanzas
+
+### Configuración del Proyecto FastAPI
+
+#### 1. Navegar al Directorio del Proyecto
+```bash
+cd actividad2-fastapi-finanzas
+```
+
+#### 2. Sincronizar Dependencias
+```bash
+uv sync
+```
+
+#### 3. Solución de Problemas de Imports
+
+Si al ejecutar `uvicorn src.main:app --reload --host 0.0.0.0 --port 8000` obtienes el error:
+```
+ModuleNotFoundError: No module named 'routes'
+```
+
+**Causa:** Los archivos `__init__.py` faltan en los directorios `src/`, `src/routes/` y `src/services/`, y los imports son absolutos en lugar de relativos.
+
+**Solución:**
+
+##### Paso 1: Crear archivos `__init__.py`
+```bash
+touch src/__init__.py
+touch src/routes/__init__.py
+touch src/services/__init__.py
+```
+
+##### Paso 2: Cambiar imports a relativos en `src/main.py`
+```python
+# Cambiar de:
+from routes.charts import router as charts_router
+from routes.forecast import router as forecast_7d
+
+# A:
+from .routes.charts import router as charts_router
+from .routes.forecast import router as forecast_7d
+```
+
+##### Paso 3: Cambiar imports a relativos en `src/routes/charts.py`
+```python
+# Cambiar de:
+from services.yahoo_services import build_history_chart_png
+
+# A:
+from ..services.yahoo_services import build_history_chart_png
+```
+
+##### Paso 4: Cambiar imports a relativos en `src/routes/forecast.py`
+```python
+# Cambiar de:
+from services.obtnain_forecast import model_forecast
+from services.yahoo_services import get_one_year_history
+
+# A:
+from ..services.obtnain_forecast import model_forecast
+from ..services.yahoo_services import get_one_year_history
+```
+
+#### 4. Ejecutar el Servidor FastAPI
+```bash
+uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+#### 5. Endpoints Disponibles
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/` | Mensaje de estado de la API |
+| GET | `/health` | Verificación de salud |
+| GET | `/charts/history/{ticker}` | Gráfico PNG de precios históricos (1 año) |
+| GET | `/forecast/forecast/{ticker}` | Predicción de 7 días |
+
+#### 6. Probar la API
+
+Puedes acceder a la documentación interactiva en:
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+Ejemplos de uso:
+```bash
+# Verificar que la API está corriendo
+curl http://localhost:8000/
+
+# Obtener gráfico de Apple (1 año)
+curl http://localhost:8000/charts/history/AAPL --output aapl_chart.png
+
+# Obtener predicción de 7 días para Microsoft
+curl http://localhost:8000/forecast/forecast/MSFT
+```
+
+---
+
 ## Estructura de Directorios
 
 mkdir models
@@ -213,30 +311,50 @@ mkdir mlruns
 ```
 mlops_mcdatos_usantoto/
 ├── README.md                           # Documentación principal del repositorio
-
+├── structure.md                        # Este archivo - Guía de configuración
 ├── .gitignore                          # Archivos ignorados por git
 │
-└── actividad1-mlops-openrate/          # Directorio de la actividad
-    ├── README.md                       # Documentación específica de la actividad
+├── actividad1-mlops-openrate/          # Directorio de la actividad 1
+│   ├── README.md                       # Documentación específica de la actividad
+│   ├── pyproject.toml                  # Configuración del proyecto (uv)
+│   ├── uv.lock                         # Archivo lock de dependencias
+│   ├── Makefile                        # Comandos centralizados del proyecto
+│   ├── .python-version                 # Versión de Python fijada
+│   ├── .venv/                          # Entorno virtual (no versionado)
+│   │
+│   ├── data/                           # Directorio de datos
+│   │   └── training_data.csv           # Dataset generado (1500 registros)
+│   │
+│   ├── src/                            # Código fuente
+│   │   └── main.py                     # Script principal
+│   │
+│   └── tests/                          # Pruebas
+│       ├── conftest.py                 # Fixtures compartidos
+│       ├── unit/                       # Pruebas unitarias
+│       │   └── test_main.py
+│       └── integration/                # Pruebas de integración
+│           └── test_integration.py
+│
+└── actividad2-fastapi-finanzas/        # Directorio de la actividad 2 (FastAPI)
+    ├── README.md                       # Documentación de la actividad (vacío)
     ├── pyproject.toml                  # Configuración del proyecto (uv)
     ├── uv.lock                         # Archivo lock de dependencias
-    ├── Makefile                        # Comandos centralizados del proyecto
-    ├── .python-version                 # Versión de Python fijada
+    ├── .python-version                 # Versión de Python fijada (3.14)
     ├── .venv/                          # Entorno virtual (no versionado)
     │
-    ├── data/                           # Directorio de datos
-    │   └── training_data.csv           # Dataset generado (1500 registros)
-    │
-    ├── src/                            # Código fuente
-    │   └── main.py                     # Script principal
-    │
-    └── tests/                          # Pruebas
-        ├── conftest.py                 # Fixtures compartidos
-        ├── unit/                       # Pruebas unitarias
-        │   └── test_main.py
-        └── integration/                # Pruebas de integración
-            └── test_integration.py
-    ├── structure.md                    # Este archivo - Guía de configuración
+    └── src/                            # Código fuente
+        ├── __init__.py                 # Init del paquete src
+        ├── main.py                     # Aplicación FastAPI principal
+        │
+        ├── routes/                     # Rutas de la API
+        │   ├── __init__.py             # Init del paquete routes
+        │   ├── charts.py               # Endpoint para gráficos históricos
+        │   └── forecast.py             # Endpoint para predicciones
+        │
+        └── services/                   # Lógica de negocio
+            ├── __init__.py             # Init del paquete services
+            ├── yahoo_services.py       # Servicio para datos de Yahoo Finance
+            └── obtnain_forecast.py     # Servicio de predicción (typo en nombre)
 ```
 
 ### Descripción de Archivos Clave
