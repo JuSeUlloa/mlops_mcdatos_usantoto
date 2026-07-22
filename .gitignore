@@ -4,3 +4,4 @@ actividad1-mlops-openrate/.venv/
 actividad1-mlops-openrate/src/__pycache__
 *.pyc
 __init__.py
+*.DS_Sotore
