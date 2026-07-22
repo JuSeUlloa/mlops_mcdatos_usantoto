@@ -17,6 +17,10 @@ env:
   WORKLOAD_IDENTITY_POOL: github-pool
   SERVICE_ACCOUNT_EMAIL: github-actions-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   deploy:
     name: Deploy to GCP Cloud Run
