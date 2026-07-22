@@ -181,6 +181,120 @@ gcloud projects add-iam-policy-binding PROJECT_ID \
   --role="roles/iam.serviceAccountUser"
 ```
 
+### Permisos de la Service Account
+
+La service account utilizada por GitHub Actions requiere los siguientes permisos:
+
+#### APIs Habilitadas
+
+| API | ID | Propósito |
+|-----|-----|-----------|
+| Cloud Run Admin API | `run.googleapis.com` | Desplegar y gestionar servicios Cloud Run |
+| Artifact Registry API | `artifactregistry.googleapis.com` | Almacenar imágenes Docker |
+| IAM Credentials API | `iamcredentials.googleapis.com` | Generar credenciales para Workload Identity |
+| Security Token Service API | `sts.googleapis.com` | Intercambiar tokens OIDC |
+| Cloud Build API | `cloudbuild.googleapis.com` | (Opcional) Para builds en GCP |
+
+**Comando para habilitar todas las APIs:**
+```bash
+gcloud services enable \
+  run.googleapis.com \
+  artifactregistry.googleapis.com \
+  iamcredentials.googleapis.com \
+  sts.googleapis.com \
+  --project=PROJECT_ID
+```
+
+#### Roles IAM Requeridos
+
+| Rol | ID | Propósito |
+|-----|-----|-----------|
+| Cloud Run Admin | `roles/run.admin` | Crear, actualizar y desplegar servicios en Cloud Run |
+| Artifact Registry Writer | `roles/artifactregistry.writer` | Subir imágenes Docker a Artifact Registry |
+| IAM Service Account User | `roles/iam.serviceAccountUser` | Usar la service account en despliegues |
+| IAM Workload Identity User | `roles/iam.workloadIdentityUser` | Permitir autenticación desde GitHub Actions |
+
+**Comando para asignar todos los roles:**
+```bash
+PROJECT_ID="tu-project-id"
+SA_EMAIL="github-actions-sa@${PROJECT_ID}.iam.gserviceaccount.com"
+
+# Roles para la service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SA_EMAIL" \
+  --role="roles/run.admin"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SA_EMAIL" \
+  --role="roles/artifactregistry.writer"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SA_EMAIL" \
+  --role="roles/iam.serviceAccountUser"
+
+# Permisos de Workload Identity
+gcloud iam service-accounts add-iam-policy-binding $SA_EMAIL \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/tu-usuario/tu-repo"
+```
+
+#### Verificación de Permisos
+
+**Verificar APIs habilitadas:**
+```bash
+gcloud services list --enabled --project=PROJECT_ID
+```
+
+**Verificar roles asignados a la service account:**
+```bash
+gcloud projects get-iam-policy PROJECT_ID \
+  --flatten="bindings[].members" \
+  --filter="bindings.members:github-actions-sa@PROJECT_ID.iam.gserviceaccount.com" \
+  --format="table(bindings.role)"
+```
+
+**Verificar configuración de Workload Identity:**
+```bash
+# Ver pool
+gcloud iam workload-identity-pools describe github-pool \
+  --location="global"
+
+# Ver provider
+gcloud iam workload-identity-pools providers describe github-provider \
+  --location="global" \
+  --workload-identity-pool="github-pool"
+
+# Ver permisos de la service account
+gcloud iam service-accounts get-iam-policy github-actions-sa@PROJECT_ID.iam.gserviceaccount.com
+```
+
+#### Solución de Problemas Comunes
+
+**Error: "API not enabled"**
+```bash
+# Habilitar la API específica
+gcloud services enable run.googleapis.com --project=PROJECT_ID
+```
+
+**Error: "Permission denied"**
+```bash
+# Verificar que la service account tiene los roles correctos
+gcloud projects get-iam-policy PROJECT_ID \
+  --filter="bindings.members:github-actions-sa@PROJECT_ID.iam.gserviceaccount.com"
+```
+
+**Error: "Workload Identity Federation failed"**
+```bash
+# Verificar que el attribute-condition coincide con tu repositorio
+gcloud iam workload-identity-pools providers describe github-provider \
+  --location="global" \
+  --workload-identity-pool="github-pool" \
+  --format="value(attributeCondition)"
+```
+  --member="serviceAccount:github-actions-sa@PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser"
+```
+
 **4. Configurar secretos en GitHub:**
 
 Ir a `Settings → Secrets and variables → Actions` y agregar:
