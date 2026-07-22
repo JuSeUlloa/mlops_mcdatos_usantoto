@@ -2,7 +2,7 @@ name: Financial Deploy API
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/model-training]
     paths:
       - 'actividad2-fastapi-finanzas/**'
   workflow_dispatch:
