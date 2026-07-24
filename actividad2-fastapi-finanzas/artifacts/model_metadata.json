@@ -1,0 +1,11 @@
+{
+  "ticker": "MSFT_regression_volatility",
+  "model_type": "RandomForestRegressor",
+  "metrics": {
+    "mae": 0.004782201563526165,
+    "rmse": 0.006229052297528237,
+    "r2": 0.09677653265815911
+  },
+  "model_path": "artifacts\\MSFT_regression_volatility.joblib",
+  "created_at": "2026-07-24T08:54:33.506152"
+}
