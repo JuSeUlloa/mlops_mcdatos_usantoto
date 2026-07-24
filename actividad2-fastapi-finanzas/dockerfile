@@ -1,22 +1,18 @@
-# version de python no usar la ultima es mas pesada 
 FROM python:3.11-slim
-# espacio de trabajo
-workdir /app
 
-# Install gestor de pauetes 
+WORKDIR /app
+
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Copiar dependencias
 COPY pyproject.toml uv.lock ./
 
-# Instalar dependencias
 RUN uv sync --frozen --no-dev
 
-# Copiar el código de la aplicación
 COPY src/ ./src/
+COPY params.yaml ./
+COPY artifacts/ ./artifacts/
+COPY data/ ./data/
 
-# Puerto de ejecución
-EXPOSE 8000
+EXPOSE 8080
 
-# Comando de ejecución
 CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080"]
