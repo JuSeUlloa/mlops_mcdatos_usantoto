@@ -3,16 +3,17 @@ name: Financial Deploy API
 
 on:
   push:
-    branches: [main, feature/model-training]
+    branches: [main]
     paths:
       - 'actividad2-fastapi-finanzas/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   PROJECT_NUMBER: 781291033375
   REGION: us-central1
-  REPOSITORY: mlops_mcdatos_usantoto
+  REPOSITORY: mlops-mcdatos-usantoto
   SERVICE: fastapi-finanzas
   IMAGE: fastapi-finanzas
   WORKLOAD_IDENTITY_POOL: github-pool
@@ -39,7 +40,7 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.WORKLOAD_IDENTITY_POOL }}'
+          workload_identity_provider: 'projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.WORKLOAD_IDENTITY_POOL }}/providers/github-provider'
           service_account: ${{ env.SERVICE_ACCOUNT_EMAIL }}
 
       - name: Set up Google Cloud SDK
